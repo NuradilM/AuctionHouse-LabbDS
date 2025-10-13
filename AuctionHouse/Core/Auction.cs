@@ -1,4 +1,4 @@
-﻿using AuctionHouse.Core.Entities;
+﻿using AuctionHouse.Core;
 
 namespace AuctionHouse.Core;
 

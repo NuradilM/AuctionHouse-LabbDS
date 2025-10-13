@@ -1,7 +1,17 @@
+using AuctionHouse.Core;
+using AuctionHouse.Persistence;
+using AuctionHouse.Core.Interfaces;   
+using AuctionHouse.Persistence.InMemory;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddScoped<IAuctionRepository, AuctionPersistenceInMemory>();
+builder.Services.AddScoped<IAuctionService, AuctionService>();
 
 var app = builder.Build();
 
