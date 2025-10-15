@@ -12,9 +12,9 @@ public class Auction
     public DateTime EndsAtUtc { get; set; }
 
     private readonly List<Bid> _bids = new();
-    public IEnumerable<Bid> Bids => _bids;
+    public List<Bid> Bids { get; set; } = new();
 
-    public Auction() { } // behövs för persistence/EF
+    public Auction() { } 
     public Auction(string sellerId, string title, string description, decimal startPrice, DateTime endsAtUtc)
     {
         SellerId = sellerId;

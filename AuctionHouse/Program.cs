@@ -2,6 +2,11 @@ using AuctionHouse.Core;
 using AuctionHouse.Persistence;
 using AuctionHouse.Core.Interfaces;   
 using AuctionHouse.Persistence.InMemory;
+using AuctionHouse.Persistence.EfCore;
+using Microsoft.EntityFrameworkCore;
+using AuctionHouse.Core.Interfaces;
+using AuctionHouse.Core;
+    
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +15,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddScoped<IAuctionRepository, AuctionPersistenceInMemory>();
+var auctionConn = builder.Configuration.GetConnectionString("AuctionConnection");
+builder.Services.AddDbContext<AuctionDbContext>(opt =>
+    opt.UseMySql(auctionConn, ServerVersion.AutoDetect(auctionConn)));
+
+builder.Services.AddScoped<IAuctionRepository, AuctionRepositoryEf>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
+
+
 
 
 var app = builder.Build();
