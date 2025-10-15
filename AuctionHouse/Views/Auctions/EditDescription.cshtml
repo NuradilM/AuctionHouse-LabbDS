@@ -1,0 +1,11 @@
+﻿@model AuctionHouse.Models.ViewModels.AuctionVm
+<h3>Edit Description</h3>
+<form method="post" asp-action="EditDescription">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" rows="3" class="form-control">@Model.Description</textarea>
+    </div>
+    <button class="btn btn-primary">Save</button>
+</form>
