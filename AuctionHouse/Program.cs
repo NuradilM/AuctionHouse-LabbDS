@@ -1,29 +1,37 @@
+using AuctionHouse.Areas.Identity.Data;
 using AuctionHouse.Core;
 using AuctionHouse.Persistence;
-using AuctionHouse.Core.Interfaces;   
+using AuctionHouse.Core.Interfaces;
 using AuctionHouse.Persistence.InMemory;
 using AuctionHouse.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
-using AuctionHouse.Core.Interfaces;
-using AuctionHouse.Core;
-    
-
+using AuctionHouse.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
 var auctionConn = builder.Configuration.GetConnectionString("AuctionConnection");
 builder.Services.AddDbContext<AuctionDbContext>(opt =>
     opt.UseMySql(auctionConn, ServerVersion.AutoDetect(auctionConn)));
 
+var identityConn = builder.Configuration.GetConnectionString("IdentityConnection");
+builder.Services.AddDbContext<AuctionHouseContext>(options =>
+    options.UseMySql(identityConn, ServerVersion.AutoDetect(identityConn)));
+
+builder.Services.AddDefaultIdentity<AuctionHouseUser>(opt =>
+    {
+        opt.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddEntityFrameworkStores<AuctionHouseContext>()
+    .AddDefaultUI();
+
+builder.Services.AddRazorPages();
+
 builder.Services.AddScoped<IAuctionRepository, AuctionRepositoryEf>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
-
-
-
 
 var app = builder.Build();
 
@@ -31,7 +39,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -40,8 +47,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
-
 app.UseAuthorization();
+app.MapRazorPages(); 
 
 app.MapControllerRoute(
     name: "default",
