@@ -4,15 +4,23 @@ using AuctionHouse.Persistence;
 
 namespace AuctionHouse.Core;
 
+
 public class AuctionService : IAuctionService
 {
     private readonly IAuctionRepository _p;
+    
+    public List<Auction> AllAuction = new List<Auction>();
 
     public AuctionService(IAuctionRepository persistence) => _p = persistence;
 
     // Queries
     public List<Auction> GetOngoing(DateTime utcNow)
-        => _p.GetAll().Where(a => a.IsOngoing(utcNow)).OrderBy(a => a.EndsAtUtc).ToList();
+        => _p.GetAll().Where(a => a.IsOngoing(utcNow))
+            .OrderBy(a => a.EndsAt).ToList();
+    
+    public List<Auction> GetEnded(DateTime utcNow)
+        => _p.GetAll().Where(a => !a.IsOngoing(utcNow))
+            .OrderByDescending(a => a.EndsAt).ToList();
 
     public Auction GetById(int id)
         => _p.GetById(id, includeBids: true) ?? throw new DataException("Auction not found");
@@ -20,15 +28,16 @@ public class AuctionService : IAuctionService
     public List<Auction> GetUserOngoingBidAuctions(string userId, DateTime utcNow)
         => _p.GetAll()
              .Where(a => a.IsOngoing(utcNow) && a.Bids.Any(b => b.BidderId == userId))
-             .OrderBy(a => a.EndsAtUtc)
+             .OrderBy(a => a.EndsAt)
              .ToList();
 
     public List<Auction> GetFinishedWonByUser(string userId, DateTime utcNow)
         => _p.GetAll()
              .Where(a => !a.IsOngoing(utcNow) && a.IsWinner(userId))
-             .OrderByDescending(a => a.EndsAtUtc)
+             .OrderByDescending(a => a.EndsAt)
              .ToList();
-
+    
+    
     // Commands
     public int Create(string sellerId, string title, string description, decimal startPrice, DateTime endsAtUtc)
     {
@@ -38,7 +47,7 @@ public class AuctionService : IAuctionService
         if (string.IsNullOrWhiteSpace(description) || description.Trim().Length is < 5 or > 2000)
             throw new ArgumentException("Description must be 5–2000 chars.");
         if (startPrice < 0) throw new ArgumentException("Start price must be >= 0.");
-        if (endsAtUtc <= DateTime.UtcNow) throw new ArgumentException("EndsAtUtc must be future UTC.");
+        if (endsAtUtc <= DateTime.Now) throw new ArgumentException("EndsAtUtc must be future UTC.");
 
         var a = new Auction(sellerId, title.Trim(), description.Trim(), startPrice, endsAtUtc);
         _p.Add(a);

@@ -4,6 +4,9 @@ public interface IAuctionService
 {
     // Queries
     List<Auction> GetOngoing(DateTime utcNow);
+    
+    List<Auction> GetEnded(DateTime utcNow);
+    
     Auction GetById(int id);
     List<Auction> GetUserOngoingBidAuctions(string userId, DateTime utcNow);
     List<Auction> GetFinishedWonByUser(string userId, DateTime utcNow);

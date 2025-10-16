@@ -9,24 +9,41 @@ public class Auction
     public string Title { get; set; }
     public string Description { get; set; }
     public decimal StartPrice { get; set; }
-    public DateTime EndsAtUtc { get; set; }
+    public DateTime EndsAt { get; set; }
 
     private readonly List<Bid> _bids = new();
-    public List<Bid> Bids { get; set; } = new();
+    // public List<Bid> Bids { get; set; } = new();
 
     public Auction() { } 
-    public Auction(string sellerId, string title, string description, decimal startPrice, DateTime endsAtUtc)
+    public Auction(string sellerId, string title, string description, decimal startPrice, DateTime endsAt)
     {
         SellerId = sellerId;
         Title = title;
         Description = description;
         StartPrice = startPrice;
-        EndsAtUtc = endsAtUtc;
+        EndsAt = endsAt;
     }
-
+    
+    public List<Bid> Bids
+    {
+        get => _bids
+            .OrderByDescending(b => b.Amount)
+            .ThenBy(b => b.PlacedAtUtc)
+            .ToList();
+        set
+        {
+            _bids.Clear();
+            if (value != null) _bids.AddRange(value);
+        }
+    }
+    
     public void AddBid(Bid bid) => _bids.Add(bid);
 
-    public bool IsOngoing(DateTime utcNow) => EndsAtUtc > utcNow;
+    public bool IsOngoing(DateTime tNow) => EndsAt > tNow;
+    
+    // Auction.cs
+    public bool IsEnded(DateTime tNow) => EndsAt <= tNow;
+
 
     public decimal HighestBid() => _bids.Count == 0 ? 0m : _bids.Max(b => b.Amount);
 

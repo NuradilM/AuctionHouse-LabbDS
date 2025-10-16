@@ -2,16 +2,35 @@
 <h3>Auctions</h3>
 <a asp-action="Create" class="btn btn-success mb-2">Create</a>
 <table class="table">
-    <thead><tr><th>Title</th><th>Ends (UTC)</th><th>Highest</th><th></th></tr></thead>
+    <thead><tr><th>Title</th><th>Ends at</th><th>Highest</th><th></th></tr></thead>
     <tbody>
     @foreach (var a in Model)
     {
         <tr>
             <td>@a.Title</td>
-            <td>@a.EndsAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@a.EndsAt.ToString("yyyy-MM-dd HH:mm")</td>
             <td>@a.HighestBid.ToString("0.00")</td>
             <td><a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-primary">Open</a></td>
         </tr>
     }
+    @{
+        var isEnded = ViewData["IsEnded"] as bool? ?? false;
+    }
+
+    <div class="btn-group mb-3" role="group" aria-label="Auction filters">
+        <a asp-action="Index"
+           class="btn btn-outline-primary @(isEnded ? "active" : "")">
+            Ongoing
+        </a>
+        <a asp-action="IsEnded"
+           class="btn btn-outline-primary @(isEnded ? "active" : "")">
+            Ended
+        </a>
+    </div>
+    
+    
+
+
+    
     </tbody>
 </table>

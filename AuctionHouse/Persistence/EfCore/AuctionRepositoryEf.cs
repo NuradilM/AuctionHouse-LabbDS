@@ -40,5 +40,10 @@ public class AuctionRepositoryEf : IAuctionRepository
     }
 
     public List<Auction> GetAll()
-        => _db.Auctions.AsNoTracking().ToList();
+        => _db.Auctions
+            .AsNoTracking()
+            .Include(a => a.Bids)
+            .AsSplitQuery()
+            .ToList();
+    
 }

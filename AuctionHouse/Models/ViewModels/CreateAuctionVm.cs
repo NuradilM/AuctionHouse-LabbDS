@@ -13,7 +13,7 @@ public class CreateAuctionVm
     [Range(0, double.MaxValue)]
     public decimal StartPrice { get; set; }
 
-    [Display(Name = "Ends (UTC)")]
+    [Display(Name = "Ends")]
     [DataType(DataType.DateTime)]
-    public DateTime EndsAtUtc { get; set; } = DateTime.UtcNow.AddHours(1);
+    public DateTime EndsAt { get; set; } = DateTime.Now;
 }

@@ -10,20 +10,23 @@ public class AuctionListItemVm
 
     public string Title { get; set; } = "";
 
-    [Display(Name = "Ends (UTC)")]
+    [Display(Name = "Ends at")]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
-    public DateTime EndsAtUtc { get; set; }
+    public DateTime EndsAt { get; set; }
 
     [Display(Name = "Highest bid")]
     [DisplayFormat(DataFormatString = "{0:0.00}")]
     public decimal HighestBid { get; set; }
 
+    public bool GetGoing { get; }
+    public bool GetEnded { get; }
+    
     public static AuctionListItemVm FromAuction(Auction a)
         => new()
         {
             Id = a.Id,
             Title = a.Title,
-            EndsAtUtc = a.EndsAtUtc,
+            EndsAt = a.EndsAt,
             HighestBid = Math.Max(a.StartPrice, a.HighestBid())
         };
 }

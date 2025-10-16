@@ -15,7 +15,7 @@ public class BidsController : Controller
     {
         try
         {
-            _svc.PlaceBid(auctionId, amount, UserId, DateTime.UtcNow);
+            _svc.PlaceBid(auctionId, amount, UserId, DateTime.Now);
         }
         catch (Exception ex)
         {

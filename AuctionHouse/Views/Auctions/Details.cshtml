@@ -1,10 +1,10 @@
 ﻿@model AuctionHouse.Models.ViewModels.AuctionVm
 @{
-    var ongoing = Model.EndsAtUtc > DateTime.UtcNow;
+    var ongoing = Model.EndsAt > DateTime.Now;
 }
 <h3>@Model.Title</h3>
 <p>@Model.Description</p>
-<p><b>Ends:</b> @Model.EndsAtUtc:u &nbsp; <b>Start:</b> @Model.StartPrice:0.00</p>
+<p><b>Ends:</b> @Model.EndsAt:u &nbsp; <b>Start:</b> @Model.StartPrice:0.00</p>
 
 @if (TempData["BidError"] is string err)
 {

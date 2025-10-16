@@ -21,7 +21,7 @@ public class AuctionDbContext : DbContext
             e.Property(x => x.Title).IsRequired().HasMaxLength(100);
             e.Property(x => x.Description).IsRequired().HasMaxLength(2000);
             e.Property(x => x.StartPrice).HasPrecision(18, 2);
-            e.HasIndex(x => x.EndsAtUtc);
+            e.HasIndex(x => x.EndsAt);
         });
 
         b.Entity<Bid>(e =>

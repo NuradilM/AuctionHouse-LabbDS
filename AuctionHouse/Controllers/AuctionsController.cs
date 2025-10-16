@@ -14,10 +14,19 @@ public class AuctionsController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var list = _svc.GetOngoing(DateTime.UtcNow)
+        var list = _svc.GetOngoing(DateTime.Now)
                        .Select(AuctionListItemVm.FromAuction)
                        .ToList();
         return View(list);
+    }
+
+    [HttpGet]
+    public IActionResult IsEnded()
+    {
+        var list = _svc.GetEnded(DateTime.Now)
+                       .Select(AuctionListItemVm.FromAuction)
+                       .ToList();
+        return View("Index",list);
     }
 
     [HttpGet]
@@ -36,7 +45,7 @@ public class AuctionsController : Controller
         if (!ModelState.IsValid) return View(vm);
         try
         {
-            var id = _svc.Create(UserId, vm.Title, vm.Description, vm.StartPrice, vm.EndsAtUtc);
+            var id = _svc.Create(UserId, vm.Title, vm.Description, vm.StartPrice, vm.EndsAt);
             return RedirectToAction(nameof(Details), new { id });
         }
         catch (Exception ex)
@@ -51,7 +60,7 @@ public class AuctionsController : Controller
     {
         try
         {
-            _svc.EditDescription(id, description, UserId, DateTime.UtcNow);
+            _svc.EditDescription(id, description, UserId, DateTime.Now);
         }
         catch (Exception ex)
         {
@@ -63,7 +72,7 @@ public class AuctionsController : Controller
     [HttpGet]
     public IActionResult MyBids()
     {
-        var list = _svc.GetUserOngoingBidAuctions(UserId, DateTime.UtcNow)
+        var list = _svc.GetUserOngoingBidAuctions(UserId, DateTime.Now)
                        .Select(AuctionListItemVm.FromAuction)
                        .ToList();
         return View("Index", list);
@@ -72,9 +81,14 @@ public class AuctionsController : Controller
     [HttpGet]
     public IActionResult MyWins()
     {
-        var list = _svc.GetFinishedWonByUser(UserId, DateTime.UtcNow)
+        var list = _svc.GetFinishedWonByUser(UserId, DateTime.Now)
                        .Select(AuctionListItemVm.FromAuction)
                        .ToList();
         return View("Index", list);
     }
+    
+    
+    
+
+    
 }
